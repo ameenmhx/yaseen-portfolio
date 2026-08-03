@@ -115,9 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Bright warm red — punches through the dark background
         const DOT_COLOR        = 'rgba(255, 80, 80,';
         const LINE_COLOR       = 'rgba(255, 80, 80,';
-        const LINE_MAX_ALPHA   = 0.45;    // much more visible lines
-        const DOT_MIN_ALPHA    = 0.50;    // floor opacity — never faint
-        const DOT_MAX_ALPHA    = 0.85;    // bright crisp nodes
+        const LINE_MAX_ALPHA   = 0.22;    // subtle lines
+        const DOT_MIN_ALPHA    = 0.25;    // floor opacity — soft
+        const DOT_MAX_ALPHA    = 0.45;    // muted nodes
 
         // --- Resize handler ---
         const resize = () => {
@@ -235,9 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Muted brand-red — visible but not distracting on light bg
         const AB_DOT_COLOR       = 'rgba(230, 57, 70,';
         const AB_LINE_COLOR      = 'rgba(26, 10, 10,';
-        const AB_LINE_MAX_ALPHA  = 0.12;      // subtle connecting lines
-        const AB_DOT_MIN_ALPHA   = 0.20;      // floor dot opacity
-        const AB_DOT_MAX_ALPHA   = 0.45;      // ceiling dot opacity
+        const AB_LINE_MAX_ALPHA  = 0.06;      // very subtle connecting lines
+        const AB_DOT_MIN_ALPHA   = 0.10;      // floor dot opacity
+        const AB_DOT_MAX_ALPHA   = 0.22;      // ceiling dot opacity
 
         // --- Resize: match the SECTION's dimensions, not just window ---
         const abResize = () => {
@@ -504,4 +504,586 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ==========================================
+    // 11. EXPERIENCE — Animated Achievement Counters
+    // ==========================================
+    function animateExpCounter(el, target, duration = 2000) {
+        let startTs = null;
+        const tick = (timestamp) => {
+            if (!startTs) startTs = timestamp;
+            const elapsed  = timestamp - startTs;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased    = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+            el.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(tick);
+            else el.textContent = target;
+        };
+        requestAnimationFrame(tick);
+    }
+
+    const expStatsRow = document.getElementById('exp-stats');
+    if (expStatsRow) {
+        let countersStarted = false;
+        const expStatsObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !countersStarted) {
+                    countersStarted = true;
+                    expStatsRow.querySelectorAll('.exp-stat-number').forEach(el => {
+                        const target = parseInt(el.dataset.target, 10);
+                        animateExpCounter(el, target, 2000);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        expStatsObserver.observe(expStatsRow);
+    }
+
+    // ==========================================
+    // 12. EXPERIENCE MODAL — Click-to-open popup
+    //     Data lives here in JS; clicking a card
+    //     injects the matching content into #modal-body
+    //     and removes the .hidden class.
+    // ==========================================
+    const EXP_DATA = {
+        ygg: {
+            icon: 'fa-gift',
+            role: 'Senior Odoo Developer',
+            company: 'YouGotaGift',
+            date: '2024 — Present',
+            color: '230, 57, 70',
+            hex: '#E63946',
+            metrics: [
+                { icon: 'fa-cubes',  label: '40+ Modules'    },
+                { icon: 'fa-bolt',   label: '120K Txn/day'   },
+                { icon: 'fa-users',  label: 'Led 6 Developers'},
+            ],
+            bullets: [
+                'Architected high-throughput transaction pipelines processing 120K+ operations daily with zero downtime SLA.',
+                'Led a cross-functional team of 6 engineers to deliver 40+ custom Odoo modules on schedule.',
+                'Integrated Docker-containerised Odoo instances with AWS infrastructure (EC2, RDS, S3).',
+                'Optimised critical PostgreSQL queries reducing average response time by 60%.',
+            ],
+            tech: ['Python', 'Odoo 17', 'PostgreSQL', 'Docker', 'AWS', 'REST APIs'],
+        },
+        odoo: {
+            icon: 'fa-gears',
+            role: 'Software Developer',
+            company: 'Odoo Pvt Ltd',
+            date: '2022 — 2024',
+            color: '124, 58, 237',
+            hex: '#7C3AED',
+            metrics: [
+                { icon: 'fa-layer-group', label: '35 Modules'     },
+                { icon: 'fa-database',    label: 'Data Migration'  },
+                { icon: 'fa-plug',        label: 'REST APIs'       },
+            ],
+            bullets: [
+                'Delivered 35 enterprise-grade modules spanning Accounting, Sales, Purchase, and Inventory verticals.',
+                'Executed large-scale data migration strategies across Odoo v14 → v16 version upgrades with 99% data integrity.',
+                'Designed and maintained REST API integrations connecting Odoo with third-party platforms and payment gateways.',
+                'Enhanced system security by implementing row-level access rules and audit logging frameworks.',
+            ],
+            tech: ['Python', 'Odoo ORM', 'XML Views', 'REST APIs', 'PostgreSQL', 'JavaScript'],
+        },
+        bassam: {
+            icon: 'fa-code',
+            role: 'Python Odoo Trainee',
+            company: 'Bassam Infotech',
+            date: '2020 — 2022',
+            color: '14, 165, 233',
+            hex: '#0EA5E9',
+            metrics: [
+                { icon: 'fa-graduation-cap',  label: 'Learning Journey' },
+                { icon: 'fa-robot',           label: 'Automation'       },
+                { icon: 'fa-table-columns',   label: 'XML & ORM'        },
+            ],
+            bullets: [
+                'Built custom views, workflows, and wizards for SME clients using Odoo ORM and XML view architecture.',
+                'Developed Python automation scripts that reduced manual data-entry workload for clients by ~40%.',
+                'Delivered integrations with third-party services (SMS gateways, shipping APIs) while maintaining code quality standards.',
+                'Gained deep foundational expertise in Odoo module structure, inheritance, and computed fields.',
+            ],
+            tech: ['Python', 'XML', 'Odoo ORM', 'QWeb', 'PostgreSQL', 'JavaScript'],
+        },
+    };
+
+    const expModal      = document.getElementById('experience-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalBody     = document.getElementById('modal-body');
+
+    function buildModalContent(data) {
+        const c   = data.color;
+        const hex = data.hex;
+
+        const metricsHTML = data.metrics.map(m =>
+            `<span class="modal-metric-pill" style="color:rgba(${c},1);background:rgba(${c},0.10);border:1px solid rgba(${c},0.25);">
+                <i class="fa-solid ${m.icon}"></i>${m.label}
+             </span>`
+        ).join('');
+
+        const bulletsHTML = data.bullets.map(b =>
+            `<li style="--bullet-color:rgba(${c},0.85);">${b}</li>`
+        ).join('');
+
+        const techHTML = data.tech.map(t =>
+            `<span class="modal-tech-pill">${t}</span>`
+        ).join('');
+
+        const marqueeTrackHTML = techHTML;
+
+        return `
+            <div class="modal-header">
+                <div class="modal-icon"
+                     style="background:linear-gradient(135deg,rgba(${c},0.22),rgba(${c},0.07));
+                            border:1px solid rgba(${c},0.35);
+                            color:rgba(${c},1);">
+                    <i class="fa-solid ${data.icon}"></i>
+                </div>
+                <div class="modal-title-block">
+                    <h3 class="modal-role-title" id="modal-title">${data.role}</h3>
+                    <p class="modal-company-name" style="color:rgba(${c},1);">${data.company}</p>
+                    <span class="modal-date-badge">${data.date}</span>
+                </div>
+            </div>
+
+            <p class="modal-section-label">Key Metrics</p>
+            <div class="modal-metrics">${metricsHTML}</div>
+
+            <p class="modal-section-label">Responsibilities</p>
+            <ul class="modal-bullets">${bulletsHTML}</ul>
+
+            <p class="modal-section-label">Tech Stack</p>
+            <div class="tech-marquee-container">
+                <div class="tech-marquee-track">
+                    ${marqueeTrackHTML}
+                </div>
+            </div>`;
+    }
+
+    function openModal(cardKey) {
+        const data = EXP_DATA[cardKey];
+        if (!data || !expModal || !modalBody) return;
+        modalBody.innerHTML = buildModalContent(data);
+        // Apply bullet dot color via CSS custom property
+        modalBody.querySelectorAll('.modal-bullets li').forEach(li => {
+            li.style.setProperty('--bullet-color', `rgba(${data.color}, 0.85)`);
+        });
+        // Apply ::before bullet via inline pseudo (workaround: use a real span)
+        modalBody.querySelectorAll('.modal-bullets li').forEach(li => {
+            const dot = document.createElement('span');
+            dot.style.cssText = `
+                position:absolute;left:0;top:8px;width:5px;height:5px;
+                border-radius:50%;background:rgba(${data.color},0.85);`;
+            li.style.position = 'relative';
+            li.style.paddingLeft = '16px';
+            li.prepend(dot);
+        });
+        expModal.classList.add('active');
+        document.body.classList.add('modal-open');
+    }
+
+    function closeModal() {
+        if (!expModal) return;
+        expModal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    }
+
+    // Card click → open
+    document.querySelectorAll('.experience-card[data-card]').forEach(card => {
+        card.addEventListener('click', () => openModal(card.dataset.card));
+    });
+
+    // Close button
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+
+    // Click on overlay backdrop (outside modal-content) → close
+    if (expModal) {
+        expModal.addEventListener('click', (e) => {
+            if (e.target === expModal) closeModal();
+        });
+    }
+
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // ==========================================
+    // 13. EXPERIENCE — Falling Code-Syntax Canvas
+    //     Matrix-style rain using coding symbols
+    //     in dark brand-red.  Runs on the canvas
+    //     absolutely positioned behind the section.
+    // ==========================================
+    const codeCanvas = document.getElementById('experience-code-canvas');
+    if (codeCanvas) {
+        const cctx    = codeCanvas.getContext('2d');
+        const SYMBOLS = [
+            '{', '}', '<', '>', '/', '(', ')', '[', ']', ';',
+            '0', '1', '=', '=>', 'def', 'SELECT', 'FROM',
+            'class', 'if', 'return', 'True', 'False', 'null',
+            'int', 'str', 'fn', '::', '&&', '||', '!=',
+        ];
+        const FONT_SIZE  = 14;
+        const RAIN_COLOR = 'rgba(230, 57, 70,';   // brand red — opacity added per-drop
+        let   columns    = [];
+        let   drops      = [];
+
+        function initCodeCanvas() {
+            const section = codeCanvas.parentElement;
+            codeCanvas.width  = section ? section.offsetWidth  : window.innerWidth;
+            codeCanvas.height = section ? section.offsetHeight : window.innerHeight;
+            const cols = Math.floor(codeCanvas.width / (FONT_SIZE * 1.6));
+            columns = Array.from({ length: cols }, (_, i) => ({
+                x       : i * FONT_SIZE * 1.6 + FONT_SIZE / 2,
+                speed   : 0.15 + Math.random() * 0.25,  // reduced fall speed for ambient effect
+                opacity : 0.4 + Math.random() * 0.35,  // softened brightness for subtle texture
+            }));
+            drops   = columns.map(() => Math.random() * -codeCanvas.height);  // start above canvas
+        }
+
+        let codeAnimId = null;
+
+        function drawCodeRain() {
+            // Fade trail — semi-transparent fill clears previous frame
+            cctx.fillStyle = 'rgba(5, 0, 0, 0.12)';
+            cctx.fillRect(0, 0, codeCanvas.width, codeCanvas.height);
+
+            cctx.font = `${FONT_SIZE}px "Courier New", monospace`;
+
+            columns.forEach((col, i) => {
+                const sym  = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+                const y    = drops[i];
+
+                // Head symbol — brighter with higher alpha/opacity
+                cctx.fillStyle = `${RAIN_COLOR} ${col.opacity})`;
+                cctx.fillText(sym, col.x, y);
+
+                // Advance drop
+                drops[i] += FONT_SIZE * col.speed;
+
+                // Reset when it exits the bottom — randomise delay
+                if (drops[i] > codeCanvas.height + FONT_SIZE) {
+                    drops[i] = -(Math.random() * codeCanvas.height * 0.5);
+                    col.speed   = 0.15 + Math.random() * 0.25;
+                    col.opacity = 0.4 + Math.random() * 0.35;
+                }
+            });
+
+            codeAnimId = requestAnimationFrame(drawCodeRain);
+        }
+
+        initCodeCanvas();
+        drawCodeRain();
+
+        // Resize
+        let codeResizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(codeResizeTimer);
+            codeResizeTimer = setTimeout(() => {
+                if (codeAnimId) cancelAnimationFrame(codeAnimId);
+                initCodeCanvas();
+                drawCodeRain();
+            }, 200);
+        });
+    }
+
+    // ==========================================
+    // 14. EXPERIENCE CARDS — Magnetic 3D Tilt
+    //     Subtle perspective tilt (max ±4°).
+    //     Disabled while modal is open.
+    // ==========================================
+    const MAX_TILT = 4;
+
+    document.querySelectorAll('.experience-card').forEach(card => {
+
+        card.addEventListener('mousemove', (e) => {
+            if (expModal && expModal.classList.contains('active')) return;
+            const rect    = card.getBoundingClientRect();
+            const nx      = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
+            const ny      = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
+            const rotateY =  nx * MAX_TILT;
+            const rotateX = -ny * MAX_TILT;
+            card.style.transition = 'transform 0.1s linear, box-shadow 0.35s ease, border-color 0.35s ease';
+            card.style.transform  = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.55s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.35s ease, border-color 0.35s ease';
+            card.style.transform  = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+    });
+
+    // ==========================================
+    // 15. PROJECTS SECTION — 3D Magnetic Hover & Cursor Glow
+    // ==========================================
+    const PROJECT_MAX_TILT = 5;
+
+    document.querySelectorAll('.project-card').forEach(card => {
+        const glow = card.querySelector('.card-glow');
+
+        card.addEventListener('mousemove', (e) => {
+            if (projModal && projModal.classList.contains('active')) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const nx = (x / rect.width - 0.5) * 2;
+            const ny = (y / rect.height - 0.5) * 2;
+
+            const rotateY = nx * PROJECT_MAX_TILT;
+            const rotateX = -ny * PROJECT_MAX_TILT;
+
+            card.style.transition = 'transform 0.1s linear, box-shadow 0.35s ease, border-color 0.35s ease';
+            card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+
+            if (glow) {
+                card.style.setProperty('--mouse-x', `${x.toFixed(1)}px`);
+                card.style.setProperty('--mouse-y', `${y.toFixed(1)}px`);
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.35s ease, border-color 0.35s ease';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+    });
+
+    // ==========================================
+    // 16. PROJECTS SECTION — Complex Canvas Background Engine
+    //     Floating low-opacity code snippets & tiny drifting particles
+    // ==========================================
+    const projCanvas = document.getElementById('projects-bg-canvas');
+    if (projCanvas) {
+        const pctx = projCanvas.getContext('2d');
+
+        const CODE_SNIPPETS = [
+            'SELECT * FROM account_move',
+            'EXPLAIN ANALYZE SELECT',
+            'def migrate_v14_to_v18():',
+            'POST /api/v1/webhook',
+            'docker run -d odoo:18',
+            'env["ir.model"].search()',
+            'RETURNING id, status',
+            '200 OK - 12ms',
+            'CREATE INDEX CONCURRENTLY',
+            'async def handle_payload():',
+            'pg_dump -h localhost',
+            'class PaymentGatewayMiddleware:',
+        ];
+
+        let projElements = [];
+        let projAnimId = null;
+
+        const initProjCanvas = () => {
+            const section = projCanvas.parentElement ? projCanvas.parentElement.parentElement : null;
+            projCanvas.width = section ? section.offsetWidth : window.innerWidth;
+            projCanvas.height = section ? section.offsetHeight : window.innerHeight;
+
+            projElements = [];
+
+            const snippetCount = Math.max(14, Math.floor(projCanvas.width / 100));
+            for (let i = 0; i < snippetCount; i++) {
+                projElements.push({
+                    type: 'code',
+                    text: CODE_SNIPPETS[Math.floor(Math.random() * CODE_SNIPPETS.length)],
+                    x: Math.random() * projCanvas.width,
+                    y: Math.random() * projCanvas.height,
+                    speed: 0.25 + Math.random() * 0.35,
+                    fontSize: 12 + Math.floor(Math.random() * 4),
+                    opacity: 0.22 + Math.random() * 0.25  // Increased opacity for vivid visibility
+                });
+            }
+
+            const particleCount = Math.max(35, Math.floor(projCanvas.width / 35));
+            for (let i = 0; i < particleCount; i++) {
+                projElements.push({
+                    type: 'particle',
+                    x: Math.random() * projCanvas.width,
+                    y: Math.random() * projCanvas.height,
+                    r: 1.2 + Math.random() * 2.2,
+                    speed: 0.20 + Math.random() * 0.40,
+                    opacity: 0.25 + Math.random() * 0.35  // Increased particle opacity
+                });
+            }
+        };
+
+        const drawProjBackground = () => {
+            pctx.clearRect(0, 0, projCanvas.width, projCanvas.height);
+
+            projElements.forEach(el => {
+                if (el.type === 'code') {
+                    pctx.font = `${el.fontSize}px "Courier New", monospace`;
+                    pctx.fillStyle = `rgba(225, 235, 255, ${el.opacity.toFixed(3)})`;
+                    pctx.fillText(el.text, el.x, el.y);
+                } else {
+                    pctx.beginPath();
+                    pctx.arc(el.x, el.y, el.r, 0, Math.PI * 2);
+                    pctx.fillStyle = `rgba(255, 255, 255, ${el.opacity.toFixed(3)})`;
+                    pctx.fill();
+                }
+
+                el.y -= el.speed;
+                if (el.y < -30) {
+                    el.y = projCanvas.height + 20;
+                    el.x = Math.random() * projCanvas.width;
+                }
+            });
+
+            projAnimId = requestAnimationFrame(drawProjBackground);
+        };
+
+        initProjCanvas();
+        drawProjBackground();
+
+        let projResizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(projResizeTimer);
+            projResizeTimer = setTimeout(() => {
+                if (projAnimId) cancelAnimationFrame(projAnimId);
+                initProjCanvas();
+                drawProjBackground();
+            }, 180);
+        });
+    }
+
+    // ==========================================
+    // 17. PROJECT CASE STUDY MODAL LOGIC
+    // ==========================================
+    const PROJECT_DATA = {
+        migration: {
+            title: 'Odoo Database Migration Hub',
+            category: 'DATA & CLOUD',
+            icon: 'fa-cloud-arrow-up',
+            color: '69, 123, 157',
+            hex: '#457B9D',
+            metrics: [
+                { icon: 'fa-check-double', label: '99.9% Accuracy' },
+                { icon: 'fa-bolt', label: '4x Speedup' },
+                { icon: 'fa-database', label: 'v14 → v18' }
+            ],
+            problem: 'Enterprise Odoo version upgrades (v14 to v18) presented high operational downtime and severe data loss risks due to legacy schema shifts.',
+            solution: 'Engineered an automated ETL data migration engine using Python & Odoo ORM with dynamic field transformation, constraint pre-checks, and parallel thread execution.',
+            result: 'Achieved 99.9% data migration integrity across 500K+ records with zero unplanned downtime during enterprise go-live.',
+            tech: ['Python', 'Odoo ORM', 'PostgreSQL', 'ETL Engine', 'Docker', 'Linux']
+        },
+        optimizer: {
+            title: 'PostgreSQL Query Optimizer',
+            category: 'BACKEND ARCHITECTURE',
+            icon: 'fa-microchip',
+            color: '230, 57, 70',
+            hex: '#E63946',
+            metrics: [
+                { icon: 'fa-gauge-high', label: '80% Latency Drop' },
+                { icon: 'fa-chart-line', label: 'Real-time Profiling' },
+                { icon: 'fa-lock-open', label: 'Lock Detection' }
+            ],
+            problem: 'Unindexed complex SQL join queries bottlenecked core ERP transactions during peak sales hours.',
+            solution: 'Developed a real-time database profiling daemon in Python that continuously monitors slow queries, logs lock contention, and generates automatic index recommendations.',
+            result: 'Slashed query latency by 80% and eliminated transaction deadlock timeouts under heavy concurrent loads.',
+            tech: ['PostgreSQL', 'Python', 'Daemon', 'Indexing', 'SQL EXPLAIN', 'Asyncio']
+        },
+        middleware: {
+            title: 'Odoo Payment Gateway Middleware',
+            category: 'DEVOPS & INFRA',
+            icon: 'fa-network-wired',
+            color: '42, 157, 143',
+            hex: '#2A9D8F',
+            metrics: [
+                { icon: 'fa-server', label: '10K+ Webhooks/day' },
+                { icon: 'fa-shield-halved', label: '99.99% Uptime' },
+                { icon: 'fa-arrows-rotate', label: 'Retry Queue' }
+            ],
+            problem: 'High webhooks traffic during flash sales caused synchronization failures between Odoo instances and external payment gateways.',
+            solution: 'Architected a high-concurrency Flask microservice layer with Redis job queues, exponential backoff retries, and HMAC signature validation.',
+            result: 'Successfully processed 10,000+ daily webhooks with zero dropped transactions at 99.99% system availability.',
+            tech: ['Flask', 'REST APIs', 'Webhooks', 'Microservices', 'Redis', 'Python']
+        }
+    };
+
+    const projModal = document.getElementById('project-modal');
+    const projModalCloseBtn = document.getElementById('project-modal-close-btn');
+    const projModalBody = document.getElementById('project-modal-body');
+
+    function buildProjectModalContent(data) {
+        const c = data.color;
+        const metricsHTML = data.metrics.map(m =>
+            `<span class="modal-metric-pill" style="color:rgba(${c},1);background:rgba(${c},0.12);border:1px solid rgba(${c},0.3);">
+                <i class="fa-solid ${m.icon}"></i>${m.label}
+             </span>`
+        ).join('');
+
+        const techHTML = data.tech.map(t =>
+            `<span class="modal-tech-pill" style="border-color:rgba(${c},0.3);background:rgba(${c},0.08);">${t}</span>`
+        ).join('');
+
+        return `
+            <div class="modal-header">
+                <div class="modal-icon" style="background:linear-gradient(135deg,rgba(${c},0.25),rgba(${c},0.08));border:1px solid rgba(${c},0.4);color:rgba(${c},1);">
+                    <i class="fa-solid ${data.icon}"></i>
+                </div>
+                <div class="modal-title-block">
+                    <h3 class="modal-role-title">${data.title}</h3>
+                    <p class="modal-company-name" style="color:rgba(${c},1);">${data.category}</p>
+                </div>
+            </div>
+
+            <p class="modal-section-label">Performance Metrics</p>
+            <div class="modal-metrics">${metricsHTML}</div>
+
+            <p class="modal-section-label">Case Study Overview</p>
+            <div class="project-psr-flow" style="margin-bottom: 0;">
+                <div class="psr-step psr-problem">
+                    <span class="psr-label">Problem</span>
+                    <span class="psr-text">${data.problem}</span>
+                </div>
+                <div class="psr-arrow">↓</div>
+                <div class="psr-step psr-solution">
+                    <span class="psr-label">Solution</span>
+                    <span class="psr-text">${data.solution}</span>
+                </div>
+                <div class="psr-arrow">↓</div>
+                <div class="psr-step psr-result">
+                    <span class="psr-label">Result</span>
+                    <span class="psr-text"><strong class="psr-metric" style="color:rgba(${c},1);">${data.result}</strong></span>
+                </div>
+            </div>
+
+            <p class="modal-section-label" style="margin-top: 15px;">Technologies Used</p>
+            <div class="modal-tech-pills">${techHTML}</div>`;
+    }
+
+    function openProjectModal(key) {
+        const data = PROJECT_DATA[key];
+        if (!data || !projModal || !projModalBody) return;
+        projModalBody.innerHTML = buildProjectModalContent(data);
+        projModal.classList.add('active');
+        document.body.classList.add('modal-open');
+    }
+
+    function closeProjectModal() {
+        if (!projModal) return;
+        projModal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    }
+
+    document.querySelectorAll('.project-card[data-project]').forEach(card => {
+        card.addEventListener('click', (e) => {
+            const projectKey = card.dataset.project;
+            if (projectKey) openProjectModal(projectKey);
+        });
+    });
+
+    if (projModalCloseBtn) projModalCloseBtn.addEventListener('click', closeProjectModal);
+    if (projModal) {
+        projModal.addEventListener('click', (e) => {
+            if (e.target === projModal) closeProjectModal();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeProjectModal();
+    });
+
 });
+

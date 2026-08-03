@@ -23,8 +23,8 @@
             <nav class="nav-menu" id="nav-menu">
                 <a href="#about" class="nav-link">About Me</a>
                 <a href="#skills" class="nav-link">Skills</a>
-                <a href="#projects" class="nav-link">Projects</a>
                 <a href="#experience" class="nav-link">Experience</a>
+                <a href="#projects" class="nav-link">Projects</a>
                 <a href="#resume" class="nav-link">Resume</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </nav>
@@ -209,61 +209,6 @@
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects-section">
-        <div class="projects-container">
-            <div class="section-header reveal">
-                <span class="subtitle">Showcase of work</span>
-                <h2 class="section-title">Key Projects</h2>
-                <div class="header-line"></div>
-            </div>
-            <div class="projects-grid">
-                <div class="project-card reveal">
-                    <div class="project-img-wrapper">
-                        <i class="fa-solid fa-arrows-spin project-placeholder-icon"></i>
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">Odoo Database Migration Hub</h3>
-                        <p class="project-description">Developed a custom data migration toolkit automating record transformation and schema mapping for Odoo versions upgrades (v14 to v18).</p>
-                        <div class="project-tags">
-                            <span>Python</span>
-                            <span>Odoo ORM</span>
-                            <span>PostgreSQL</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card reveal">
-                    <div class="project-img-wrapper">
-                        <i class="fa-solid fa-magnifying-glass-chart project-placeholder-icon"></i>
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">PostgreSQL Query Optimizer</h3>
-                        <p class="project-description">A real-time database profiling daemon written in Python that monitors slow queries, logs locks, and suggests indexes on the fly.</p>
-                        <div class="project-tags">
-                            <span>PostgreSQL</span>
-                            <span>Python</span>
-                            <span>Daemon</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card reveal">
-                    <div class="project-img-wrapper">
-                        <i class="fa-solid fa-link project-placeholder-icon"></i>
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">Odoo Payment Gateway Middleware</h3>
-                        <p class="project-description">Designed a resilient API layer linking Odoo ERP instances with YouGotaGift transaction gateways, processing over 10K daily webhooks.</p>
-                        <div class="project-tags">
-                            <span>Flask</span>
-                            <span>REST APIs</span>
-                            <span>Webhooks</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Experience Section -->
     <section id="experience" class="experience-section">
         <div class="experience-container">
@@ -273,72 +218,167 @@
                 <div class="header-line"></div>
             </div>
 
-            <!-- Responsive Grid of Glassmorphism Cards -->
+            <!-- ── Achievement Counters ── -->
+            <div class="exp-stats-row" id="exp-stats">
+                <div class="exp-stat-item">
+                    <h2 class="exp-stat-numline"><span class="exp-stat-number" data-target="5">0</span>+</h2>
+                    <span class="exp-stat-label">Years Experience</span>
+                </div>
+                <div class="exp-stat-divider"></div>
+                <div class="exp-stat-item">
+                    <h2 class="exp-stat-numline"><span class="exp-stat-number" data-target="80">0</span>+</h2>
+                    <span class="exp-stat-label">Projects Delivered</span>
+                </div>
+                <div class="exp-stat-divider"></div>
+                <div class="exp-stat-item">
+                    <h2 class="exp-stat-numline"><span class="exp-stat-number" data-target="15">0</span>+</h2>
+                    <span class="exp-stat-label">Technologies</span>
+                </div>
+            </div>
+
+            <!-- ── Career Progression Timeline ── -->
+            <div class="career-timeline reveal" id="career-timeline">
+                <div class="timeline-step">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">Today</span>
+                        <p class="timeline-text">Leading Enterprise ERP Development</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">2024</span>
+                        <p class="timeline-text">Senior Developer</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">2022</span>
+                        <p class="timeline-text">Software Developer</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-year">2020</span>
+                        <p class="timeline-text">Started as Python Trainee</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Experience Cards ── -->
             <div class="experience-grid">
-                
-                <!-- Experience 1: YouGotaGift -->
-                <div class="experience-card reveal">
-                    <div class="card-glow"></div>
-                    <div class="card-header">
-                        <div class="card-meta">
-                            <span class="company-name"><i class="fa-solid fa-briefcase"></i> YouGotaGift</span>
-                            <span class="date-badge">Sep 2024 - Present</span>
+
+                <!-- Card 1: YouGotaGift -->
+                <div class="experience-card exp-card-ygg reveal"
+                     data-card="ygg"
+                     style="--company-color: 230, 57, 70; --company-color-hex: #E63946;">
+                    <div class="exp-card-default">
+                        <div class="exp-company-icon">
+                            <i class="fa-solid fa-gift"></i>
                         </div>
-                        <h3 class="role-title">Senior Odoo Developer</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="role-desc">Leading the in-house development team to deliver data-centric business applications. Focused on PostgreSQL performance tuning, complex API integrations, and deploying robust data pipelines.</p>
-                        <div class="card-tags">
-                            <span>PostgreSQL</span>
-                            <span>API Integration</span>
-                            <span>Team Leadership</span>
-                            <span>Data Pipelines</span>
-                        </div>
+                        <h3 class="exp-role">Senior Odoo Developer</h3>
+                        <p class="exp-company">YouGotaGift</p>
+                        <span class="exp-date">2024 — Present</span>
+                        <span class="exp-click-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Click for details</span>
                     </div>
                 </div>
 
-                <!-- Experience 2: Odoo Pvt Ltd -->
-                <div class="experience-card reveal">
-                    <div class="card-glow"></div>
-                    <div class="card-header">
-                        <div class="card-meta">
-                            <span class="company-name"><i class="fa-solid fa-briefcase"></i> Odoo Pvt Ltd</span>
-                            <span class="date-badge">Jan 2022 - Aug 2024</span>
+                <!-- Card 2: Odoo Pvt Ltd -->
+                <div class="experience-card exp-card-odoo reveal"
+                     data-card="odoo"
+                     style="--company-color: 124, 58, 237; --company-color-hex: #7C3AED;">
+                    <div class="exp-card-default">
+                        <div class="exp-company-icon">
+                            <i class="fa-solid fa-gears"></i>
                         </div>
-                        <h3 class="role-title">Software Developer</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="role-desc">Developed enterprise modules across Accounting, Sales, and Inventory. Executed large-scale data migration strategies during version upgrades and enhanced system security frameworks.</p>
-                        <div class="card-tags">
-                            <span>Odoo ORM</span>
-                            <span>Data Migration</span>
-                            <span>Accounting</span>
-                            <span>System Security</span>
-                        </div>
+                        <h3 class="exp-role">Software Developer</h3>
+                        <p class="exp-company">Odoo Pvt Ltd</p>
+                        <span class="exp-date">2022 — 2024</span>
+                        <span class="exp-click-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Click for details</span>
                     </div>
                 </div>
 
-                <!-- Experience 3: Bassam Infotech -->
-                <div class="experience-card reveal">
-                    <div class="card-glow"></div>
-                    <div class="card-header">
-                        <div class="card-meta">
-                            <span class="company-name"><i class="fa-solid fa-briefcase"></i> Bassam Infotech</span>
-                            <span class="date-badge">Nov 2020 - Jan 2022</span>
+                <!-- Card 3: Bassam Infotech -->
+                <div class="experience-card exp-card-bassam reveal"
+                     data-card="bassam"
+                     style="--company-color: 14, 165, 233; --company-color-hex: #0EA5E9;">
+                    <div class="exp-card-default">
+                        <div class="exp-company-icon">
+                            <i class="fa-solid fa-code"></i>
                         </div>
-                        <h3 class="role-title">Python Odoo Trainee</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="role-desc">Built custom views, workflows, and modules for SMEs. Supported seamless integrations of third-party services while maintaining high standards for code quality and ORM optimization.</p>
-                        <div class="card-tags">
-                            <span>Python</span>
-                            <span>Custom Modules</span>
-                            <span>ORM Optimization</span>
-                            <span>XML Views</span>
-                        </div>
+                        <h3 class="exp-role">Python Odoo Trainee</h3>
+                        <p class="exp-company">Bassam Infotech</p>
+                        <span class="exp-date">2020 — 2022</span>
+                        <span class="exp-click-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Click for details</span>
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- ── Code-rain background canvas ── -->
+        <canvas id="experience-code-canvas" class="exp-code-canvas"></canvas>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section">
+        <!-- Complex "Tech vs Reality" Multi-Layered Background Engine -->
+        <div class="projects-bg-wrapper">
+            <div class="projects-bg-layer layer-base"></div>
+            <div class="projects-bg-layer layer-grid"></div>
+            <div class="projects-bg-layer layer-scanline"></div>
+            <canvas id="projects-bg-canvas" class="projects-bg-canvas"></canvas>
+        </div>
+
+        <div class="projects-container">
+            <div class="section-header projects-header reveal">
+                <span class="subtitle">Showcase of work</span>
+                <h2 class="section-title">Key Projects</h2>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Card 1: Side Card (Data & Cloud) -->
+                <div class="project-card theme-data reveal" data-project="migration">
+                    <div class="card-glow"></div>
+                    <div class="project-card-icon">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <span class="project-card-badge">DATA &amp; CLOUD</span>
+                    <h3 class="project-title">Odoo Database Migration Hub</h3>
+                    <div class="project-card-footer">
+                        <span>Click to view details</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2: Center Card (Backend Architecture) -->
+                <div class="project-card theme-backend reveal" data-project="optimizer">
+                    <div class="card-glow"></div>
+                    <div class="project-card-icon">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <span class="project-card-badge">BACKEND ARCHITECTURE</span>
+                    <h3 class="project-title">PostgreSQL Query Optimizer</h3>
+                    <div class="project-card-footer">
+                        <span>Click to view details</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3: Side Card (DevOps & Infra) -->
+                <div class="project-card theme-devops reveal" data-project="middleware">
+                    <div class="card-glow"></div>
+                    <div class="project-card-icon">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <span class="project-card-badge">DEVOPS &amp; INFRA</span>
+                    <h3 class="project-title">Odoo Payment Gateway Middleware</h3>
+                    <div class="project-card-footer">
+                        <span>Click to view details</span> <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -450,6 +490,21 @@
             <p class="footer-subtext">Crafted with passion &amp; cinematic design</p>
         </div>
     </footer>
+
+    <!-- Modals (Placed outside sections to prevent layout/overflow bugs) -->
+    <div id="experience-modal" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">&times;</button>
+            <div id="modal-body" class="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-content project-modal-content">
+            <button class="modal-close-btn" id="project-modal-close-btn" aria-label="Close project case study modal">&times;</button>
+            <div id="project-modal-body" class="modal-body"></div>
+        </div>
+    </div>
 
     <!-- Custom Script -->
     <script src="script.js"></script>
