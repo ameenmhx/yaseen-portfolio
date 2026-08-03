@@ -106,52 +106,101 @@
 
     <!-- About Section -->
     <section id="about" class="about-section reveal">
-        <div class="about-container">
-            <div class="about-grid">
+        <!-- Particle canvas — covers the ENTIRE about section -->
+        <canvas class="about-canvas" id="about-canvas"></canvas>
 
-                <!-- Left: Portrait Card (like reference) -->
-                <div class="about-portrait-card">
-                    <div class="about-portrait-img-wrap">
-                        <img src="yasi.jpg" alt="Muhammad Yaseen" class="about-portrait-img">
-                        <div class="about-portrait-name-tag">Yaseen</div>
-                    </div>
-                    <div class="about-portrait-links">
-                        <a href="https://linkedin.com/in/muhammad-yaseen-odoo" target="_blank" rel="noopener noreferrer" class="about-social-link"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="https://github.com/myaseen-python" target="_blank" rel="noopener noreferrer" class="about-social-link"><i class="fa-brands fa-github"></i></a>
+        <div class="about-grid">
+
+            <!-- Left Column: Portrait — 3D Flip Card -->
+            <div class="about-portrait-card">
+                <!-- 3D Flip Card -->
+                <div class="flip-card" id="profile-flip-card">
+                    <div class="flip-card-inner">
+
+                        <!-- FRONT: Typographic branding panel -->
+                        <div class="flip-card-front">
+                            <div class="flip-card-front-content">
+                                <span class="flip-card-eyebrow">Code - Optimize - Automate</span>
+                                <div class="flip-card-accent-line"></div>
+                                <h2 class="flip-card-name">Muhammad<br>Yaseen</h2>
+                                <div class="flip-card-accent-line"></div>
+                                <span class="flip-card-role">Senior Odoo Developer</span>
+                                <span class="flip-card-hint"><i class="fa-solid fa-hand-pointer"></i> Click to reveal</span>
+                            </div>
+                        </div>
+
+                        <!-- BACK: Profile photo -->
+                        <div class="flip-card-back">
+                            <img src="yasi.jpg" alt="Muhammad Yaseen" class="about-portrait-img">
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Right: Text & Skills -->
-                <div class="about-right">
-                    <div class="section-header about-section-header">
-                        <span class="subtitle">A brief overview</span>
-                        <h2 class="section-title">About Me</h2>
-                        <div class="header-line" style="margin: 15px 0 0;"></div>
+                <!-- Social icons below the card (untouched) -->
+                <div class="about-portrait-links">
+                    <a href="https://www.linkedin.com/in/yaseenbusthani/" target="_blank" rel="noopener noreferrer" class="about-social-link" id="about-linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="https://github.com/ygg-yaseen" target="_blank" rel="noopener noreferrer" class="about-social-link" id="about-github"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+
+            <!-- Right Pane: Light editorial content -->
+            <div class="about-right">
+
+                <!-- Header -->
+                <div class="section-header about-section-header">
+                    <span class="subtitle">A brief overview</span>
+                    <h2 class="section-title about-title">About Me</h2>
+                    <div class="header-line about-header-line"></div>
+                </div>
+
+                <!-- Identity pills -->
+                <div class="about-identity" id="skills">
+                    <div class="about-tags-scroll">
+                        <span class="about-identity-tag">&#8226; Odoo ERP</span>
+                        <span class="about-identity-tag">&#8226; Python</span>
+                        <span class="about-identity-tag">&#8226; PostgreSQL</span>
+                        <span class="about-identity-tag">&#8226; API Design</span>
+                        <span class="about-identity-tag">&#8226; DevOps</span>
                     </div>
-                    <div id="skills" class="about-identity">
-                        <div class="about-tags-scroll">
-                            <span class="about-identity-tag">&#8226; Odoo ERP</span>
-                            <span class="about-identity-tag">&#8226; Python</span>
-                            <span class="about-identity-tag">&#8226; PostgreSQL</span>
-                            <span class="about-identity-tag">&#8226; API Design</span>
-                            <span class="about-identity-tag">&#8226; DevOps</span>
-                        </div>
-                    </div>
-                    <div class="about-text">
-                        <p>I am a passionate backend engineer specializing in the Odoo ERP ecosystem, Python, and PostgreSQL. Over the past 5+ years, I have focused on designing scalable modules, fine-tuning complex SQL queries, building custom REST/JSON-RPC APIs, and migrating massive corporate databases.</p>
-                        <p>I thrive on turning complex business requirements into simple, high-performing code — ensuring security, integrity, and scalability at every layer of the stack.</p>
-                    </div>
-                    <div class="about-skills">
-                        <h3 class="skills-title">Core Competencies</h3>
-                        <div class="skills-grid">
-                            <div class="skill-tag"><i class="fa-brands fa-python skill-icon"></i> Python</div>
-                            <div class="skill-tag"><i class="fa-solid fa-gears skill-icon"></i> Odoo ERP</div>
-                            <div class="skill-tag"><i class="fa-solid fa-database skill-icon"></i> PostgreSQL</div>
-                            <div class="skill-tag"><i class="fa-solid fa-network-wired skill-icon"></i> API Integrations</div>
-                            <div class="skill-tag"><i class="fa-brands fa-docker skill-icon"></i> Docker</div>
-                            <div class="skill-tag"><i class="fa-brands fa-git-alt skill-icon"></i> Git Version Control</div>
-                            <div class="skill-tag"><i class="fa-solid fa-chart-line skill-icon"></i> Query Optimization</div>
-                            <div class="skill-tag"><i class="fa-solid fa-server skill-icon"></i> Linux &amp; DevOps</div>
+                </div>
+
+                <!-- Bio paragraphs -->
+                <div class="about-text-block">
+                    <p>I am a passionate backend engineer specialising in the <strong>Odoo ERP ecosystem</strong>, Python, and PostgreSQL. Over the past <strong>5+ years</strong>, I have focused on designing scalable modules, fine-tuning complex SQL queries, building custom REST/JSON-RPC APIs, and migrating massive corporate databases.</p>
+                    <p>I thrive on turning complex business requirements into simple, high-performing code &mdash; ensuring <strong>security, integrity, and scalability</strong> at every layer of the stack.</p>
+                </div>
+
+                <!-- Thin separator -->
+                <div class="about-divider"></div>
+
+                <!-- Core Competencies: Infinite Horizontal Marquee -->
+                <div class="about-competencies">
+                    <h3 class="skills-title">Core Competencies</h3>
+                    <div class="marquee-container" id="about-marquee">
+                        <div class="marquee-track">
+                            <!-- Set 1 -->
+                            <span class="marquee-pill"><i class="fa-brands fa-python"></i> Python</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-gears"></i> Odoo ERP</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-database"></i> PostgreSQL</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-network-wired"></i> API Integrations</span>
+                            <span class="marquee-pill"><i class="fa-brands fa-docker"></i> Docker</span>
+                            <span class="marquee-pill"><i class="fa-brands fa-git-alt"></i> Git Version Control</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-chart-line"></i> Query Optimisation</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-server"></i> Linux &amp; DevOps</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-shield-halved"></i> Security</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-cubes"></i> Microservices</span>
+                            <!-- Set 2 (duplicate for seamless loop) -->
+                            <span class="marquee-pill"><i class="fa-brands fa-python"></i> Python</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-gears"></i> Odoo ERP</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-database"></i> PostgreSQL</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-network-wired"></i> API Integrations</span>
+                            <span class="marquee-pill"><i class="fa-brands fa-docker"></i> Docker</span>
+                            <span class="marquee-pill"><i class="fa-brands fa-git-alt"></i> Git Version Control</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-chart-line"></i> Query Optimisation</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-server"></i> Linux &amp; DevOps</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-shield-halved"></i> Security</span>
+                            <span class="marquee-pill"><i class="fa-solid fa-cubes"></i> Microservices</span>
                         </div>
                     </div>
                 </div>

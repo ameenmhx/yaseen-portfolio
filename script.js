@@ -216,6 +216,127 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
+    // 6b. ABOUT SECTION — Light-Theme Particle Network
+    //     A soft, elegant particle network anchored
+    //     to the about section canvas. Colors are
+    //     dark/semi-transparent so they read clearly
+    //     against the #F5F2F2 light background.
+    // ==========================================
+    const aboutCanvas = document.getElementById('about-canvas');
+    if (aboutCanvas) {
+        const actx        = aboutCanvas.getContext('2d');
+        let abParticles   = [];
+        let abAnimId      = null;
+
+        // --- Config for light-background visibility ---
+        const AB_CONNECTION_DIST = 180;       // connection radius in px
+        const AB_SPEED_BASE      = 0.12;      // very slow drift
+        const AB_SPEED_VARIANCE  = 0.05;
+        // Muted brand-red — visible but not distracting on light bg
+        const AB_DOT_COLOR       = 'rgba(230, 57, 70,';
+        const AB_LINE_COLOR      = 'rgba(26, 10, 10,';
+        const AB_LINE_MAX_ALPHA  = 0.12;      // subtle connecting lines
+        const AB_DOT_MIN_ALPHA   = 0.20;      // floor dot opacity
+        const AB_DOT_MAX_ALPHA   = 0.45;      // ceiling dot opacity
+
+        // --- Resize: match the SECTION's dimensions, not just window ---
+        const abResize = () => {
+            // Use the section element as the size source so the canvas
+            // stays in sync even if the section height is not 100vh.
+            const section = aboutCanvas.parentElement;
+            aboutCanvas.width  = section ? section.offsetWidth  : aboutCanvas.offsetWidth;
+            aboutCanvas.height = section ? section.offsetHeight : aboutCanvas.offsetHeight;
+        };
+
+        let abResizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(abResizeTimer);
+            abResizeTimer = setTimeout(() => {
+                abResize();
+                abInitParticles();
+            }, 120);
+        });
+        abResize();
+
+        // --- Seed particles proportional to canvas area ---
+        function abInitParticles() {
+            abParticles = [];
+            // Sparser than hero (÷10 000) for a lighter, airier feel
+            const count = Math.max(40, Math.floor((aboutCanvas.width * aboutCanvas.height) / 10000));
+            for (let i = 0; i < count; i++) {
+                const speed = AB_SPEED_BASE + (Math.random() * AB_SPEED_VARIANCE * 2 - AB_SPEED_VARIANCE);
+                const angle = Math.random() * Math.PI * 2;
+                abParticles.push({
+                    x     : Math.random() * aboutCanvas.width,
+                    y     : Math.random() * aboutCanvas.height,
+                    r     : Math.random() * 2.0 + 0.8,   // 0.8–2.8 px — smaller nodes
+                    dx    : Math.cos(angle) * speed,
+                    dy    : Math.sin(angle) * speed,
+                    alpha : AB_DOT_MIN_ALPHA + Math.random() * (AB_DOT_MAX_ALPHA - AB_DOT_MIN_ALPHA)
+                });
+            }
+        }
+        abInitParticles();
+
+        // --- Draw one frame ---
+        function abDrawFrame() {
+            actx.clearRect(0, 0, aboutCanvas.width, aboutCanvas.height);
+
+            // Pass 1 — Connecting lines (background pass)
+            for (let i = 0; i < abParticles.length; i++) {
+                for (let j = i + 1; j < abParticles.length; j++) {
+                    const ddx  = abParticles[i].x - abParticles[j].x;
+                    const ddy  = abParticles[i].y - abParticles[j].y;
+                    const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+
+                    if (dist < AB_CONNECTION_DIST) {
+                        // Fade lines out as particles drift apart
+                        const lineAlpha = AB_LINE_MAX_ALPHA * (1 - dist / AB_CONNECTION_DIST);
+                        actx.beginPath();
+                        actx.strokeStyle = `${AB_LINE_COLOR} ${lineAlpha.toFixed(3)})`;
+                        actx.lineWidth   = 0.6;
+                        actx.moveTo(abParticles[i].x, abParticles[i].y);
+                        actx.lineTo(abParticles[j].x, abParticles[j].y);
+                        actx.stroke();
+                    }
+                }
+            }
+
+            // Pass 2 — Dot nodes (foreground pass)
+            abParticles.forEach(p => {
+                // Soft radial glow halo
+                const grd = actx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+                grd.addColorStop(0,   `${AB_DOT_COLOR} ${(p.alpha * 0.8).toFixed(3)})`);
+                grd.addColorStop(0.4, `${AB_DOT_COLOR} ${(p.alpha * 0.3).toFixed(3)})`);
+                grd.addColorStop(1,   `${AB_DOT_COLOR} 0)`);
+
+                actx.beginPath();
+                actx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+                actx.fillStyle = grd;
+                actx.fill();
+
+                // Hard crisp dot core
+                actx.beginPath();
+                actx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                actx.fillStyle = `${AB_DOT_COLOR} ${p.alpha.toFixed(3)})`;
+                actx.fill();
+
+                // Move & bounce off section edges
+                p.x += p.dx;
+                p.y += p.dy;
+                if (p.x < 0 || p.x > aboutCanvas.width)  p.dx *= -1;
+                if (p.y < 0 || p.y > aboutCanvas.height)  p.dy *= -1;
+            });
+
+            abAnimId = requestAnimationFrame(abDrawFrame);
+        }
+
+        if (abAnimId) cancelAnimationFrame(abAnimId);
+        abDrawFrame();
+    }
+
+
+    // ==========================================
     // 7. TYPEWRITER EFFECT
     // ==========================================
     const typewriterEl = document.getElementById('typewriter');
@@ -368,6 +489,19 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         spotlightContainer.addEventListener('touchend',    onTouchEnd);
         spotlightContainer.addEventListener('touchcancel', onTouchEnd);
+    }
+
+    // ==========================================
+    // 10. PROFILE FLIP CARD — Click to flip
+    // ==========================================
+    const profileFlipCard = document.getElementById('profile-flip-card');
+
+    if (profileFlipCard) {
+        const flipInner = profileFlipCard.querySelector('.flip-card-inner');
+
+        profileFlipCard.addEventListener('click', () => {
+            flipInner.classList.toggle('is-flipped');
+        });
     }
 
 });
