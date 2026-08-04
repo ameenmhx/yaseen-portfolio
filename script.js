@@ -74,36 +74,225 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 5. Contact Form
+    // 5. Contact Overhaul: Live Clock, Chat Flow, Parallax & Canvas
     // ==========================================
-    const contactForm = document.getElementById('contact-form');
-    const formSuccess = document.getElementById('form-success');
-    const successClose = document.getElementById('success-close');
-    const btnSubmit = document.getElementById('btn-submit');
+    
+    // --- Live IST Clock ---
+    const updateLiveClock = () => {
+        const liveClockEl = document.getElementById('live-clock');
+        if (liveClockEl) {
+            const timeString = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata' });
+            liveClockEl.textContent = timeString + " (IST)";
+        }
+    };
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+    // --- Chat Stage Flow ---
+    const chatStage1 = document.getElementById('chat-stage-1');
+    const chatStage2 = document.getElementById('chat-stage-2');
+    const chatStage3 = document.getElementById('chat-stage-3');
+    const chatForm = document.getElementById('chat-form');
+    const chatTopicInput = document.getElementById('chat-topic');
+    const chatMessage = document.getElementById('chat-message');
+    const terminalStatus = document.getElementById('terminal-status');
+    const chatSubmit = document.getElementById('chat-submit');
+    const chatButtons = document.querySelectorAll('.chat-btn');
+
+    chatButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const topic = btn.getAttribute('data-topic');
+            if (chatTopicInput) {
+                chatTopicInput.value = topic;
+            }
+            if (chatStage1 && chatStage2) {
+                chatStage1.style.opacity = '0';
+                chatStage1.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    chatStage1.classList.add('hidden');
+                    chatStage2.classList.remove('hidden');
+                    void chatStage2.offsetWidth; // Trigger layout reflow
+                    chatStage2.style.opacity = '1';
+                    chatStage2.style.transform = 'translateY(0)';
+                    if (chatMessage) chatMessage.focus();
+                }, 400);
+            }
+        });
+    });
+
+    if (chatForm) {
+        chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const originalBtnContent = btnSubmit.innerHTML;
-            btnSubmit.innerHTML = '<span>Sending...</span> <i class="fa-solid fa-circle-notch fa-spin"></i>';
-            btnSubmit.disabled = true;
-            setTimeout(() => {
-                formSuccess.classList.add('active');
-                contactForm.reset();
-                btnSubmit.innerHTML = originalBtnContent;
-                btnSubmit.disabled = false;
-            }, 1500);
+            if (chatSubmit) chatSubmit.disabled = true;
+
+            const steps = [
+                { text: 'Connecting to database gateway...', delay: 0 },
+                { text: 'Encrypting message payload...', delay: 800 },
+                { text: 'Dispatching message packet...', delay: 1600 },
+                { text: 'Success. Ready...', delay: 2400 }
+            ];
+
+            steps.forEach(step => {
+                setTimeout(() => {
+                    if (terminalStatus) {
+                        terminalStatus.textContent = step.text;
+                    }
+                    if (step.text.startsWith('Success')) {
+                        setTimeout(() => {
+                            if (chatStage2 && chatStage3) {
+                                chatStage2.style.opacity = '0';
+                                chatStage2.style.transform = 'translateY(-10px)';
+                                setTimeout(() => {
+                                    chatStage2.classList.add('hidden');
+                                    chatStage3.classList.remove('hidden');
+                                    void chatStage3.offsetWidth; // Trigger layout reflow
+                                    chatStage3.style.opacity = '1';
+                                    chatStage3.style.transform = 'translateY(0)';
+                                    chatForm.reset();
+                                    if (chatSubmit) chatSubmit.disabled = false;
+                                }, 400);
+                            }
+                        }, 400);
+                    }
+                }, step.delay);
+            });
         });
     }
-    if (successClose) {
-        successClose.addEventListener('click', () => formSuccess.classList.remove('active'));
+
+    // --- Mouse Parallax ---
+    const contactSection = document.getElementById('contact');
+    const contactInfo = document.querySelector('.contact-info');
+    const glassChatPanel = document.querySelector('.glass-chat-panel');
+
+    if (contactSection && contactInfo && glassChatPanel) {
+        contactSection.addEventListener('mousemove', (e) => {
+            const rect = contactSection.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+            
+            const maxMove = 5;
+            const moveX = x * maxMove;
+            const moveY = y * maxMove;
+            
+            contactInfo.style.transform = `translate(${moveX.toFixed(2)}px, ${moveY.toFixed(2)}px)`;
+            glassChatPanel.style.transform = `translate(${-moveX.toFixed(2)}px, ${-moveY.toFixed(2)}px)`;
+        });
+        
+        contactSection.addEventListener('mouseleave', () => {
+            contactInfo.style.transition = 'transform 0.4s ease';
+            glassChatPanel.style.transition = 'transform 0.4s ease';
+            contactInfo.style.transform = 'translate(0, 0)';
+            glassChatPanel.style.transform = 'translate(0, 0)';
+        });
+        
+        contactSection.addEventListener('mouseenter', () => {
+            contactInfo.style.transition = 'none';
+            glassChatPanel.style.transition = 'none';
+        });
+    }
+
+    // --- Interactive Background Canvas ---
+    const contactCanvas = document.getElementById('contact-bg-canvas');
+    if (contactCanvas) {
+        const cctx = contactCanvas.getContext('2d');
+
+        const CODE_SNIPPETS = [
+            'SELECT * FROM account_move',
+            'EXPLAIN ANALYZE SELECT',
+            'def migrate_v14_to_v18():',
+            'POST /api/v1/webhook',
+            'docker run -d odoo:18',
+            'env["ir.model"].search()',
+            'RETURNING id, status',
+            '200 OK - 12ms',
+            'CREATE INDEX CONCURRENTLY',
+            'async def handle_payload():',
+            'pg_dump -h localhost',
+            'class PaymentGatewayMiddleware:',
+        ];
+
+        let contactElements = [];
+        let contactAnimId = null;
+
+        const initContactCanvas = () => {
+            const section = contactCanvas.parentElement ? contactCanvas.parentElement.parentElement : null;
+            contactCanvas.width = section ? section.offsetWidth : window.innerWidth;
+            contactCanvas.height = section ? section.offsetHeight : window.innerHeight;
+
+            contactElements = [];
+
+            const snippetCount = 5;
+            for (let i = 0; i < snippetCount; i++) {
+                contactElements.push({
+                    type: 'code',
+                    text: CODE_SNIPPETS[Math.floor(Math.random() * CODE_SNIPPETS.length)],
+                    x: Math.random() * contactCanvas.width,
+                    y: Math.random() * contactCanvas.height,
+                    speed: 0.05 + Math.random() * 0.05,
+                    fontSize: 10 + Math.floor(Math.random() * 2),
+                    opacity: 0.08 + Math.random() * 0.08
+                });
+            }
+
+            const particleCount = 15;
+            for (let i = 0; i < particleCount; i++) {
+                contactElements.push({
+                    type: 'particle',
+                    x: Math.random() * contactCanvas.width,
+                    y: Math.random() * contactCanvas.height,
+                    r: 0.5 + Math.random() * 1.0,
+                    speed: 0.04 + Math.random() * 0.06,
+                    opacity: 0.10 + Math.random() * 0.15
+                });
+            }
+        };
+
+        const drawContactBackground = () => {
+            cctx.clearRect(0, 0, contactCanvas.width, contactCanvas.height);
+
+            contactElements.forEach(el => {
+                if (el.type === 'code') {
+                    cctx.font = `${el.fontSize}px "Courier New", monospace`;
+                    cctx.fillStyle = `rgba(225, 235, 255, ${el.opacity.toFixed(3)})`;
+                    cctx.fillText(el.text, el.x, el.y);
+                } else {
+                    cctx.beginPath();
+                    cctx.arc(el.x, el.y, el.r, 0, Math.PI * 2);
+                    cctx.fillStyle = `rgba(255, 255, 255, ${el.opacity.toFixed(3)})`;
+                    cctx.fill();
+                }
+
+                el.y -= el.speed;
+                if (el.y < -30) {
+                    el.y = contactCanvas.height + 20;
+                    el.x = Math.random() * contactCanvas.width;
+                }
+            });
+
+            contactAnimId = requestAnimationFrame(drawContactBackground);
+        };
+
+        initContactCanvas();
+        drawContactBackground();
+
+        let contactResizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(contactResizeTimer);
+            contactResizeTimer = setTimeout(() => {
+                if (contactAnimId) cancelAnimationFrame(contactAnimId);
+                initContactCanvas();
+                drawContactBackground();
+            }, 180);
+        });
     }
 
     // ==========================================
     // 6. PARTICLE CANVAS ANIMATION (Premium Data-Node Network)
     // ==========================================
-    const canvas = document.getElementById('hero-canvas');
-    if (canvas) {
+    function initDataNodeNetwork(canvasId, minParticles = 60) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+
         const ctx = canvas.getContext('2d');
         let particles     = [];
         let animFrameId   = null;
@@ -139,8 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- Seed particles (area-based density) ---
         function initParticles() {
             particles = [];
-            // Scale count with viewport area — minimum 60 nodes
-            const count = Math.max(60, Math.floor((canvas.width * canvas.height) / 7000));
+            // Scale count with viewport area
+            const count = Math.max(minParticles, Math.floor((canvas.width * canvas.height) / 7000));
             for (let i = 0; i < count; i++) {
                 const speed = SPEED_BASE + (Math.random() * SPEED_VARIANCE * 2 - SPEED_VARIANCE);
                 const angle = Math.random() * Math.PI * 2;
@@ -214,6 +403,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (animFrameId) cancelAnimationFrame(animFrameId);
         drawFrame();
     }
+
+    initDataNodeNetwork('hero-canvas', 60);
+    initDataNodeNetwork('footer-particles', 15);
 
     // ==========================================
     // 6b. ABOUT SECTION — Light-Theme Particle Network
@@ -1083,6 +1275,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeProjectModal();
+    });
+
+    // ==========================================
+    // 14. RESUME DOWNLOAD CONFIRMATION MODAL
+    // ==========================================
+    const resumeModal = document.getElementById('resume-modal');
+    const triggerResumeModal = document.getElementById('trigger-resume-modal');
+    const cancelDownload = document.getElementById('cancel-download');
+    const confirmDownload = document.getElementById('confirm-download');
+
+    function closeResumeModal() {
+        if (resumeModal) {
+            resumeModal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+    }
+
+    if (triggerResumeModal && resumeModal) {
+        triggerResumeModal.addEventListener('click', () => {
+            resumeModal.classList.add('active');
+            document.body.classList.add('modal-open');
+        });
+    }
+
+    if (cancelDownload) {
+        cancelDownload.addEventListener('click', closeResumeModal);
+    }
+
+    if (confirmDownload) {
+        confirmDownload.addEventListener('click', closeResumeModal);
+    }
+
+    if (resumeModal) {
+        resumeModal.addEventListener('click', (e) => {
+            if (e.target === resumeModal) {
+                closeResumeModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeResumeModal();
+        }
     });
 
 });
