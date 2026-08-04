@@ -406,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDataNodeNetwork('hero-canvas', 60);
     initDataNodeNetwork('footer-particles', 15);
+    initDataNodeNetwork('modal-canvas', 30);
 
     // ==========================================
     // 6b. ABOUT SECTION — Light-Theme Particle Network
@@ -756,7 +757,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Integrated Docker-containerised Odoo instances with AWS infrastructure (EC2, RDS, S3).',
                 'Optimised critical PostgreSQL queries reducing average response time by 60%.',
             ],
-            tech: ['Python', 'Odoo 17', 'PostgreSQL', 'Docker', 'AWS', 'REST APIs'],
+            techCategories: [
+                {
+                    title: 'CORE BACKEND',
+                    badges: ['Python', 'Odoo 17', 'PostgreSQL']
+                },
+                {
+                    title: 'DEVOPS & INFRA',
+                    badges: ['Docker', 'AWS']
+                },
+                {
+                    title: 'APIS & INTEG',
+                    badges: ['REST APIs']
+                }
+            ]
         },
         odoo: {
             icon: 'fa-gears',
@@ -776,7 +790,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Designed and maintained REST API integrations connecting Odoo with third-party platforms and payment gateways.',
                 'Enhanced system security by implementing row-level access rules and audit logging frameworks.',
             ],
-            tech: ['Python', 'Odoo ORM', 'XML Views', 'REST APIs', 'PostgreSQL', 'JavaScript'],
+            techCategories: [
+                {
+                    title: 'CORE BACKEND',
+                    badges: ['Python', 'Odoo ORM', 'PostgreSQL']
+                },
+                {
+                    title: 'FRONTEND & UI',
+                    badges: ['XML Views', 'JavaScript']
+                },
+                {
+                    title: 'APIS & INTEG',
+                    badges: ['REST APIs']
+                }
+            ]
         },
         bassam: {
             icon: 'fa-code',
@@ -796,7 +823,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Delivered integrations with third-party services (SMS gateways, shipping APIs) while maintaining code quality standards.',
                 'Gained deep foundational expertise in Odoo module structure, inheritance, and computed fields.',
             ],
-            tech: ['Python', 'XML', 'Odoo ORM', 'QWeb', 'PostgreSQL', 'JavaScript'],
+            techCategories: [
+                {
+                    title: 'CORE BACKEND',
+                    badges: ['Python', 'Odoo ORM', 'PostgreSQL']
+                },
+                {
+                    title: 'FRONTEND & UI',
+                    badges: ['XML', 'QWeb', 'JavaScript']
+                },
+                {
+                    title: 'APIS & INTEG',
+                    badges: ['API Integrations']
+                }
+            ]
         },
     };
 
@@ -809,20 +849,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const hex = data.hex;
 
         const metricsHTML = data.metrics.map(m =>
-            `<span class="modal-metric-pill" style="color:rgba(${c},1);background:rgba(${c},0.10);border:1px solid rgba(${c},0.25);">
+            `<span class="metric-badge" style="color:rgba(${c},1);background:rgba(${c},0.12);border:1px solid rgba(${c},0.28);">
                 <i class="fa-solid ${m.icon}"></i>${m.label}
              </span>`
         ).join('');
 
         const bulletsHTML = data.bullets.map(b =>
-            `<li style="--bullet-color:rgba(${c},0.85);">${b}</li>`
+            `<li><span class="bullet-dot" style="background:rgba(${c},0.85);"></span>${b}</li>`
         ).join('');
 
-        const techHTML = data.tech.map(t =>
-            `<span class="modal-tech-pill">${t}</span>`
-        ).join('');
-
-        const marqueeTrackHTML = techHTML;
+        const techCategoriesHTML = data.techCategories.map(cat => `
+            <div class="tech-category-box" style="--box-color:rgba(${c},0.35);--box-shadow-color:rgba(${c},0.08);--box-shadow-hover:rgba(${c},0.2);">
+                <span class="tech-category-title">${cat.title}</span>
+                <div class="tech-items">
+                    ${cat.badges.map(badge => `<span class="tech-badge">${badge}</span>`).join('')}
+                </div>
+            </div>
+        `).join('');
 
         return `
             <div class="modal-header">
@@ -839,16 +882,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
 
-            <p class="modal-section-label">Key Metrics</p>
-            <div class="modal-metrics">${metricsHTML}</div>
+            <div class="modal-section">
+                <p class="modal-section-label">Key Metrics</p>
+                <div class="key-metrics">${metricsHTML}</div>
+            </div>
 
-            <p class="modal-section-label">Responsibilities</p>
-            <ul class="modal-bullets">${bulletsHTML}</ul>
+            <div class="modal-section">
+                <p class="modal-section-label">Responsibilities</p>
+                <ul class="modal-bullets">${bulletsHTML}</ul>
+            </div>
 
-            <p class="modal-section-label">Tech Stack</p>
-            <div class="tech-marquee-container">
-                <div class="tech-marquee-track">
-                    ${marqueeTrackHTML}
+            <div class="modal-section">
+                <p class="modal-section-label">Tech Stack</p>
+                <div class="floating-tech-stack">
+                    <div class="tech-stack-track">${techCategoriesHTML}</div>
                 </div>
             </div>`;
     }
@@ -857,22 +904,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = EXP_DATA[cardKey];
         if (!data || !expModal || !modalBody) return;
         modalBody.innerHTML = buildModalContent(data);
-        // Apply bullet dot color via CSS custom property
-        modalBody.querySelectorAll('.modal-bullets li').forEach(li => {
-            li.style.setProperty('--bullet-color', `rgba(${data.color}, 0.85)`);
-        });
-        // Apply ::before bullet via inline pseudo (workaround: use a real span)
-        modalBody.querySelectorAll('.modal-bullets li').forEach(li => {
-            const dot = document.createElement('span');
-            dot.style.cssText = `
-                position:absolute;left:0;top:8px;width:5px;height:5px;
-                border-radius:50%;background:rgba(${data.color},0.85);`;
-            li.style.position = 'relative';
-            li.style.paddingLeft = '16px';
-            li.prepend(dot);
-        });
         expModal.classList.add('active');
         document.body.classList.add('modal-open');
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 50);
     }
 
     function closeModal() {
@@ -1042,6 +1078,86 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
+    // 15b. PER-CARD CANVAS PARTICLE ANIMATION
+    //      Each project card has its own mini canvas
+    //      with accent-colored drifting particles
+    // ==========================================
+    (function initProjectCardCanvases() {
+        const THEME_COLORS = {
+            'theme-data':    '69, 123, 157',
+            'theme-backend': '230, 57, 70',
+            'theme-devops':  '42, 157, 143',
+        };
+
+        document.querySelectorAll('.project-card').forEach(card => {
+            const canvas = card.querySelector('.project-card-canvas');
+            if (!canvas) return;
+
+            // Determine accent color from card's theme class
+            let rgb = '200, 200, 200';
+            for (const [cls, color] of Object.entries(THEME_COLORS)) {
+                if (card.classList.contains(cls)) { rgb = color; break; }
+            }
+
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            let animId;
+
+            function resizeCanvas() {
+                canvas.width  = card.offsetWidth;
+                canvas.height = card.offsetHeight;
+            }
+
+            function spawnParticles() {
+                particles.length = 0;
+                const count = Math.max(18, Math.floor((canvas.width * canvas.height) / 2200));
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x:    Math.random() * canvas.width,
+                        y:    Math.random() * canvas.height,
+                        r:    0.8 + Math.random() * 2.2,
+                        vx:   (Math.random() - 0.5) * 0.35,
+                        vy:   -0.2 - Math.random() * 0.4,
+                        alpha: 0.12 + Math.random() * 0.28,
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${rgb}, ${p.alpha.toFixed(3)})`;
+                    ctx.fill();
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.y < -5)            p.y = canvas.height + 5;
+                    if (p.x < -5)            p.x = canvas.width  + 5;
+                    if (p.x > canvas.width + 5) p.x = -5;
+                });
+                animId = requestAnimationFrame(draw);
+            }
+
+            resizeCanvas();
+            spawnParticles();
+            draw();
+
+            // Respawn on resize
+            const ro = new ResizeObserver(() => {
+                if (animId) cancelAnimationFrame(animId);
+                resizeCanvas();
+                spawnParticles();
+                draw();
+            });
+            ro.observe(card);
+        });
+    })();
+
+
+    //     Floating low-opacity code snippets & tiny drifting particles
+    // ==========================================
     // 16. PROJECTS SECTION — Complex Canvas Background Engine
     //     Floating low-opacity code snippets & tiny drifting particles
     // ==========================================
@@ -1200,13 +1316,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildProjectModalContent(data) {
         const c = data.color;
         const metricsHTML = data.metrics.map(m =>
-            `<span class="modal-metric-pill" style="color:rgba(${c},1);background:rgba(${c},0.12);border:1px solid rgba(${c},0.3);">
+            `<span class="metric-badge" style="color:rgba(${c},1);background:rgba(${c},0.12);border:1px solid rgba(${c},0.28);">
                 <i class="fa-solid ${m.icon}"></i>${m.label}
              </span>`
         ).join('');
 
-        const techHTML = data.tech.map(t =>
-            `<span class="modal-tech-pill" style="border-color:rgba(${c},0.3);background:rgba(${c},0.08);">${t}</span>`
+        // Build doubled tech pills for the marquee loop
+        const techPillsHTML = data.tech.map(t =>
+            `<span style="display:inline-flex;align-items:center;padding:5px 14px;background:rgba(${c},0.1);border:1px solid rgba(${c},0.28);border-radius:100px;font-size:0.75rem;font-weight:600;color:rgba(${c},1);white-space:nowrap;letter-spacing:0.4px;">${t}</span>`
         ).join('');
 
         return `
@@ -1220,30 +1337,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
 
-            <p class="modal-section-label">Performance Metrics</p>
-            <div class="modal-metrics">${metricsHTML}</div>
+            <div class="modal-section">
+                <p class="modal-section-label">Performance Metrics</p>
+                <div class="key-metrics">${metricsHTML}</div>
+            </div>
 
-            <p class="modal-section-label">Case Study Overview</p>
-            <div class="project-psr-flow" style="margin-bottom: 0;">
-                <div class="psr-step psr-problem">
-                    <span class="psr-label">Problem</span>
-                    <span class="psr-text">${data.problem}</span>
-                </div>
-                <div class="psr-arrow">↓</div>
-                <div class="psr-step psr-solution">
-                    <span class="psr-label">Solution</span>
-                    <span class="psr-text">${data.solution}</span>
-                </div>
-                <div class="psr-arrow">↓</div>
-                <div class="psr-step psr-result">
-                    <span class="psr-label">Result</span>
-                    <span class="psr-text"><strong class="psr-metric" style="color:rgba(${c},1);">${data.result}</strong></span>
+            <div class="modal-section">
+                <p class="modal-section-label">Case Study Overview</p>
+                <div class="project-psr-flow">
+                    <div class="psr-step psr-problem">
+                        <span class="psr-label">Problem</span>
+                        <span class="psr-text">${data.problem}</span>
+                    </div>
+                    <div class="psr-arrow">↓</div>
+                    <div class="psr-step psr-solution">
+                        <span class="psr-label">Solution</span>
+                        <span class="psr-text">${data.solution}</span>
+                    </div>
+                    <div class="psr-arrow">↓</div>
+                    <div class="psr-step psr-result">
+                        <span class="psr-label">Result</span>
+                        <span class="psr-text"><strong class="psr-metric" style="color:rgba(${c},1);">${data.result}</strong></span>
+                    </div>
                 </div>
             </div>
 
-            <p class="modal-section-label" style="margin-top: 15px;">Technologies Used</p>
-            <div class="modal-tech-pills">${techHTML}</div>`;
+            <div class="modal-section">
+                <p class="modal-section-label">Technologies Used</p>
+                <div style="overflow:hidden;padding:4px 0;mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);">
+                    <div class="pc-tech-track" style="animation-duration:14s;">
+                        ${techPillsHTML}${techPillsHTML}
+                    </div>
+                </div>
+            </div>`;
     }
+
+    let projModalCanvasAnimId = null;
 
     function openProjectModal(key) {
         const data = PROJECT_DATA[key];
@@ -1251,10 +1380,64 @@ document.addEventListener('DOMContentLoaded', () => {
         projModalBody.innerHTML = buildProjectModalContent(data);
         projModal.classList.add('active');
         document.body.classList.add('modal-open');
+
+        // Animate the project modal canvas with accent-colored particles
+        const pmCanvas = document.getElementById('project-modal-canvas');
+        if (pmCanvas) {
+            if (projModalCanvasAnimId) cancelAnimationFrame(projModalCanvasAnimId);
+            const pmCtx = pmCanvas.getContext('2d');
+            const rgb = data.color;
+            const pmParticles = [];
+
+            const initPmCanvas = () => {
+                const mc = pmCanvas.parentElement;
+                pmCanvas.width  = mc ? mc.offsetWidth  : 560;
+                pmCanvas.height = mc ? mc.offsetHeight : 500;
+                pmParticles.length = 0;
+                const count = Math.max(25, Math.floor((pmCanvas.width * pmCanvas.height) / 3000));
+                for (let i = 0; i < count; i++) {
+                    pmParticles.push({
+                        x:     Math.random() * pmCanvas.width,
+                        y:     Math.random() * pmCanvas.height,
+                        r:     0.6 + Math.random() * 2.0,
+                        vx:    (Math.random() - 0.5) * 0.3,
+                        vy:    -0.15 - Math.random() * 0.35,
+                        alpha: 0.08 + Math.random() * 0.22,
+                    });
+                }
+            };
+
+            const drawPmCanvas = () => {
+                pmCtx.clearRect(0, 0, pmCanvas.width, pmCanvas.height);
+                pmParticles.forEach(p => {
+                    pmCtx.beginPath();
+                    pmCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    pmCtx.fillStyle = `rgba(${rgb}, ${p.alpha.toFixed(3)})`;
+                    pmCtx.fill();
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.y < -5) p.y = pmCanvas.height + 5;
+                    if (p.x < -5) p.x = pmCanvas.width + 5;
+                    if (p.x > pmCanvas.width + 5) p.x = -5;
+                });
+                projModalCanvasAnimId = requestAnimationFrame(drawPmCanvas);
+            };
+
+            setTimeout(() => {
+                initPmCanvas();
+                drawPmCanvas();
+            }, 50);
+        }
+
+        setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
     }
 
     function closeProjectModal() {
         if (!projModal) return;
+        if (projModalCanvasAnimId) {
+            cancelAnimationFrame(projModalCanvasAnimId);
+            projModalCanvasAnimId = null;
+        }
         projModal.classList.remove('active');
         document.body.classList.remove('modal-open');
     }

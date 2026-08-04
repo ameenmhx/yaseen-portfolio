@@ -340,47 +340,101 @@
             </div>
 
             <div class="projects-grid">
-                <!-- Card 1: Side Card (Data & Cloud) -->
+
+                <!-- Card 1: Data & Cloud -->
                 <div class="project-card theme-data reveal" data-project="migration">
+                    <canvas class="project-card-canvas"></canvas>
                     <div class="card-glow"></div>
-                    <div class="project-card-icon">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <div class="pc-top">
+                        <div class="pc-icon-wrap">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <span class="project-card-badge">DATA &amp; CLOUD</span>
                     </div>
-                    <span class="project-card-badge">DATA &amp; CLOUD</span>
                     <h3 class="project-title">Odoo Database Migration Hub</h3>
+                    <p class="pc-desc">Automated ETL engine migrating 500K+ records across Odoo versions with zero unplanned downtime.</p>
+                    <div class="pc-stats">
+                        <div class="pc-stat"><span class="pc-stat-val">99.9%</span><span class="pc-stat-lbl">Accuracy</span></div>
+                        <div class="pc-stat-divider"></div>
+                        <div class="pc-stat"><span class="pc-stat-val">4×</span><span class="pc-stat-lbl">Speedup</span></div>
+                        <div class="pc-stat-divider"></div>
+                        <div class="pc-stat"><span class="pc-stat-val">v14→v18</span><span class="pc-stat-lbl">Migration</span></div>
+                    </div>
+                    <div class="pc-tech-marquee-wrap">
+                        <div class="pc-tech-track">
+                            <span>Python</span><span>Odoo ORM</span><span>PostgreSQL</span><span>ETL Engine</span><span>Docker</span><span>Linux</span>
+                            <span>Python</span><span>Odoo ORM</span><span>PostgreSQL</span><span>ETL Engine</span><span>Docker</span><span>Linux</span>
+                        </div>
+                    </div>
                     <div class="project-card-footer">
-                        <span>Click to view details</span> <i class="fa-solid fa-arrow-right"></i>
+                        <span>View Case Study</span> <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </div>
 
-                <!-- Card 2: Center Card (Backend Architecture) -->
+                <!-- Card 2: Backend Architecture -->
                 <div class="project-card theme-backend reveal" data-project="optimizer">
+                    <canvas class="project-card-canvas"></canvas>
                     <div class="card-glow"></div>
-                    <div class="project-card-icon">
-                        <i class="fa-solid fa-microchip"></i>
+                    <div class="pc-top">
+                        <div class="pc-icon-wrap">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <span class="project-card-badge">BACKEND ARCH</span>
                     </div>
-                    <span class="project-card-badge">BACKEND ARCHITECTURE</span>
                     <h3 class="project-title">PostgreSQL Query Optimizer</h3>
+                    <p class="pc-desc">Real-time profiling daemon that monitors slow queries, detects lock contention, and auto-generates index recommendations.</p>
+                    <div class="pc-stats">
+                        <div class="pc-stat"><span class="pc-stat-val">80%</span><span class="pc-stat-lbl">Latency↓</span></div>
+                        <div class="pc-stat-divider"></div>
+                        <div class="pc-stat"><span class="pc-stat-val">0</span><span class="pc-stat-lbl">Deadlocks</span></div>
+                        <div class="pc-stat-divider"></div>
+                        <div class="pc-stat"><span class="pc-stat-val">Live</span><span class="pc-stat-lbl">Profiling</span></div>
+                    </div>
+                    <div class="pc-tech-marquee-wrap">
+                        <div class="pc-tech-track">
+                            <span>PostgreSQL</span><span>Python</span><span>Daemon</span><span>Indexing</span><span>SQL EXPLAIN</span><span>Asyncio</span>
+                            <span>PostgreSQL</span><span>Python</span><span>Daemon</span><span>Indexing</span><span>SQL EXPLAIN</span><span>Asyncio</span>
+                        </div>
+                    </div>
                     <div class="project-card-footer">
-                        <span>Click to view details</span> <i class="fa-solid fa-arrow-right"></i>
+                        <span>View Case Study</span> <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </div>
 
-                <!-- Card 3: Side Card (DevOps & Infra) -->
+                <!-- Card 3: DevOps & Infra -->
                 <div class="project-card theme-devops reveal" data-project="middleware">
+                    <canvas class="project-card-canvas"></canvas>
                     <div class="card-glow"></div>
-                    <div class="project-card-icon">
-                        <i class="fa-solid fa-network-wired"></i>
+                    <div class="pc-top">
+                        <div class="pc-icon-wrap">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <span class="project-card-badge">DEVOPS &amp; INFRA</span>
                     </div>
-                    <span class="project-card-badge">DEVOPS &amp; INFRA</span>
-                    <h3 class="project-title">Odoo Payment Gateway Middleware</h3>
+                    <h3 class="project-title">Payment Gateway Middleware</h3>
+                    <p class="pc-desc">High-concurrency Flask microservice with Redis queues and HMAC validation handling 10K+ webhooks per day.</p>
+                    <div class="pc-stats">
+                        <div class="pc-stat"><span class="pc-stat-val">10K+</span><span class="pc-stat-lbl">Webhooks/day</span></div>
+                        <div class="pc-stat-divider"></div>
+                        <div class="pc-stat"><span class="pc-stat-val">99.99%</span><span class="pc-stat-lbl">Uptime</span></div>
+                        <div class="pc-stat-divider"></div>
+                        <div class="pc-stat"><span class="pc-stat-val">0</span><span class="pc-stat-lbl">Dropped</span></div>
+                    </div>
+                    <div class="pc-tech-marquee-wrap">
+                        <div class="pc-tech-track">
+                            <span>Flask</span><span>REST APIs</span><span>Webhooks</span><span>Microservices</span><span>Redis</span><span>Python</span>
+                            <span>Flask</span><span>REST APIs</span><span>Webhooks</span><span>Microservices</span><span>Redis</span><span>Python</span>
+                        </div>
+                    </div>
                     <div class="project-card-footer">
-                        <span>Click to view details</span> <i class="fa-solid fa-arrow-right"></i>
+                        <span>View Case Study</span> <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
+
 
     <!-- Contact Section -->
     <section id="contact" class="contact-section reveal">
@@ -500,14 +554,16 @@
     <!-- Modals (Placed outside sections to prevent layout/overflow bugs) -->
     <div id="experience-modal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal-content">
-            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">&times;</button>
-            <div id="modal-body" class="modal-body"></div>
+            <canvas id="modal-canvas" class="modal-canvas" style="position:absolute; inset:0; z-index:0; pointer-events:none; opacity: 0.5;"></canvas>
+            <button class="modal-close-btn close-modal" id="modal-close-btn" aria-label="Close modal">&times;</button>
+            <div id="modal-body" class="modal-body" style="position:relative; z-index:1;"></div>
         </div>
     </div>
 
     <div id="project-modal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal-content project-modal-content">
-            <button class="modal-close-btn" id="project-modal-close-btn" aria-label="Close project case study modal">&times;</button>
+            <canvas id="project-modal-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;"></canvas>
+            <button class="modal-close-btn close-modal" id="project-modal-close-btn" aria-label="Close project case study modal">&times;</button>
             <div id="project-modal-body" class="modal-body"></div>
         </div>
     </div>
