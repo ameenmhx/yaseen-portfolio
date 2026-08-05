@@ -88,23 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLiveClock();
     setInterval(updateLiveClock, 1000);
 
-    // --- Chat Stage Flow ---
+    // --- Chat Stage Flow & Web3Forms Contact Form ---
     const chatStage1 = document.getElementById('chat-stage-1');
     const chatStage2 = document.getElementById('chat-stage-2');
-    const chatStage3 = document.getElementById('chat-stage-3');
-    const chatForm = document.getElementById('chat-form');
-    const chatTopicInput = document.getElementById('chat-topic');
-    const chatMessage = document.getElementById('chat-message');
-    const terminalStatus = document.getElementById('terminal-status');
-    const chatSubmit = document.getElementById('chat-submit');
     const chatButtons = document.querySelectorAll('.chat-btn');
 
     chatButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            const topic = btn.getAttribute('data-topic');
-            if (chatTopicInput) {
-                chatTopicInput.value = topic;
-            }
             if (chatStage1 && chatStage2) {
                 chatStage1.style.opacity = '0';
                 chatStage1.style.transform = 'translateY(-10px)';
@@ -114,48 +104,96 @@ document.addEventListener('DOMContentLoaded', () => {
                     void chatStage2.offsetWidth; // Trigger layout reflow
                     chatStage2.style.opacity = '1';
                     chatStage2.style.transform = 'translateY(0)';
-                    if (chatMessage) chatMessage.focus();
+                    const messageField = document.querySelector('#contact-form textarea[name="message"]');
+                    if (messageField) messageField.focus();
                 }, 400);
             }
         });
     });
 
-    if (chatForm) {
-        chatForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (chatSubmit) chatSubmit.disabled = true;
+    const contactForm = document.getElementById('contact-form');
+    const terminalStatus = document.querySelector('.terminal-status');
 
-            const steps = [
-                { text: 'Connecting to database gateway...', delay: 0 },
-                { text: 'Encrypting message payload...', delay: 800 },
-                { text: 'Dispatching message packet...', delay: 1600 },
-                { text: 'Success. Ready...', delay: 2400 }
-            ];
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent standard page reload
 
-            steps.forEach(step => {
-                setTimeout(() => {
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // 1. Loading State
+            submitBtn.innerHTML = 'Initiating Handshake...';
+            submitBtn.disabled = true;
+            if (terminalStatus) terminalStatus.innerText = '> Executing send_message()...';
+
+            // 2. Gather Data
+            const formData = new FormData(contactForm);
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
+
+            try {
+                // 3. Send to Web3Forms
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                });
+                
+                const result = await response.json();
+                
+                if (response.status === 200) {
+                    // 4. Success State
                     if (terminalStatus) {
-                        terminalStatus.textContent = step.text;
+                        terminalStatus.innerText = '> 200 OK: Message delivered successfully.';
+                        terminalStatus.style.color = '#4ade80'; // Turn text green
                     }
-                    if (step.text.startsWith('Success')) {
-                        setTimeout(() => {
-                            if (chatStage2 && chatStage3) {
-                                chatStage2.style.opacity = '0';
-                                chatStage2.style.transform = 'translateY(-10px)';
-                                setTimeout(() => {
-                                    chatStage2.classList.add('hidden');
-                                    chatStage3.classList.remove('hidden');
-                                    void chatStage3.offsetWidth; // Trigger layout reflow
-                                    chatStage3.style.opacity = '1';
-                                    chatStage3.style.transform = 'translateY(0)';
-                                    chatForm.reset();
-                                    if (chatSubmit) chatSubmit.disabled = false;
-                                }, 400);
-                            }
-                        }, 400);
+                    submitBtn.innerHTML = 'Message Sent ✓';
+                    
+                    // 5. Transition to Stage 3 (Thanks confirmation message)
+                    const chatStage3 = document.getElementById('chat-stage-3');
+                    setTimeout(() => {
+                        if (chatStage2 && chatStage3) {
+                            chatStage2.style.opacity = '0';
+                            chatStage2.style.transform = 'translateY(-10px)';
+                            setTimeout(() => {
+                                chatStage2.classList.add('hidden');
+                                chatStage3.classList.remove('hidden');
+                                void chatStage3.offsetWidth; // Trigger layout reflow
+                                chatStage3.style.opacity = '1';
+                                chatStage3.style.transform = 'translateY(0)';
+                                contactForm.reset();
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = originalBtnText;
+                                if (terminalStatus) {
+                                    terminalStatus.innerText = '> Ready...';
+                                    terminalStatus.style.color = '';
+                                }
+                            }, 400);
+                        }
+                    }, 1200);
+                } else {
+                    // 6. API Error State
+                    console.error(result);
+                    if (terminalStatus) {
+                        terminalStatus.innerText = '> ERROR: Delivery failed. Try again.';
+                        terminalStatus.style.color = '#E63946'; // Turn text red
                     }
-                }, step.delay);
-            });
+                    submitBtn.innerHTML = 'Start a Conversation →';
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                // 7. Network Error State
+                console.error(error);
+                if (terminalStatus) {
+                    terminalStatus.innerText = '> FATAL: Network connection lost.';
+                    terminalStatus.style.color = '#E63946';
+                }
+                submitBtn.innerHTML = 'Start a Conversation →';
+                submitBtn.disabled = false;
+            }
         });
     }
 
@@ -884,7 +922,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="modal-section">
                 <p class="modal-section-label">Key Metrics</p>
-                <div class="key-metrics">${metricsHTML}</div>
+                <div class="key-metrics">
+                    <div class="metrics-track">${metricsHTML}${metricsHTML}</div>
+                </div>
             </div>
 
             <div class="modal-section">
@@ -895,7 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="modal-section">
                 <p class="modal-section-label">Tech Stack</p>
                 <div class="floating-tech-stack">
-                    <div class="tech-stack-track">${techCategoriesHTML}</div>
+                    <div class="tech-stack-track">${techCategoriesHTML}${techCategoriesHTML}</div>
                 </div>
             </div>`;
     }

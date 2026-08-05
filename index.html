@@ -511,19 +511,24 @@
 
                         <!-- Chat Stage 2 (Message Input - Hidden by default) -->
                         <div id="chat-stage-2" class="chat-stage hidden">
-                            <form id="chat-form" class="chat-stage-form">
-                                <input type="hidden" id="chat-topic" name="topic" value="">
-                                <div class="chat-input-wrapper">
-                                    <textarea id="chat-message" name="message" required placeholder="Type your message here..."></textarea>
-                                    <span class="focus-bar"></span>
+                            <form id="contact-form">
+                                <!-- Web3Forms Access Key -->
+                                <input type="hidden" name="access_key" value="f3dbf03b-2d1d-474f-8e0f-9151c5f3a496">
+                                
+                                <div class="input-group">
+                                    <input type="text" name="name" placeholder="Your Name" required>
+                                    <input type="email" name="email" placeholder="Your Email" required>
                                 </div>
-                                <div class="terminal-prompt">
-                                    &gt; $ send_message()<br>
-                                    &gt; <span id="terminal-status">Ready...</span><span class="terminal-cursor"></span>
+                                
+                                <textarea name="message" placeholder="Type your message here..." required></textarea>
+                                
+                                <!-- The terminal status text we will update via JS -->
+                                <div class="terminal-text">
+                                    <p>&gt; &amp; send_message()</p>
+                                    <p class="terminal-status">&gt; Ready...</p>
                                 </div>
-                                <button type="submit" class="btn btn-primary chat-submit-btn" id="chat-submit">
-                                    <span>Start a Conversation →</span>
-                                </button>
+
+                                <button type="submit" class="submit-btn">Start a Conversation →</button>
                             </form>
                         </div>
 
