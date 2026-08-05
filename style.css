@@ -2216,7 +2216,7 @@ section {
         border-radius: 30px;
         padding: 0 15px;
         box-sizing: border-box;
-        overflow: hidden;
+        overflow: visible;
     }
 
     .navbar.scrolled {
@@ -2279,30 +2279,48 @@ section {
 
     .nav-menu {
         position: fixed;
-        top: 80px;
-        left: -110%;
-        width: calc(100% - 40px);
-        height: calc(100vh - 100px);
-        background: rgba(13, 1, 1, 0.98);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        top: 75px;
+        left: -120%;
+        width: calc(100% - 30px);
+        max-width: 380px;
+        height: auto;
+        background: rgba(13, 2, 2, 0.97);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 30px;
-        transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        z-index: 999;
+        gap: 22px;
+        transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease, visibility 0.35s ease;
+        z-index: 99999;
         border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 40px;
+        border: 1px solid rgba(230, 57, 70, 0.3);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(230, 57, 70, 0.15);
+        padding: 35px 25px;
+        opacity: 0;
+        visibility: hidden;
     }
 
     .nav-menu.active {
-        left: 20px;
+        left: 15px;
+        opacity: 1;
+        visibility: visible;
     }
 
     .nav-link {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link:active {
+        color: #E63946;
     }
 
     /* Animated Hambuger Button */
@@ -3534,53 +3552,65 @@ body.modal-open {
 
     /* ── HERO SECTION ── */
 
-    /* Push content downward so face is more visible above the text */
     .hero-section {
-        align-items: flex-end;
-        padding-bottom: 0;
+        min-height: 115vh !important;
+        height: auto !important;
+        padding-top: 120px !important;
+        padding-bottom: 40px !important;
+        align-items: flex-end !important;
+    }
+
+    .spotlight-container {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .spotlight-container .hero-img {
+        object-position: top center !important;
     }
 
     .hero-container {
-        padding: 0 20px 50px 20px;
-        width: 100%;
-        max-width: 100%;
+        padding: 0 20px 30px 20px !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     .hero-content {
-        max-width: 100%;
-        gap: 14px;
-        text-align: left;
+        max-width: 100% !important;
+        gap: 14px !important;
+        text-align: left !important;
     }
 
     .hero-greeting {
-        font-size: 0.72rem;
-        letter-spacing: 4px;
+        font-size: 0.72rem !important;
+        letter-spacing: 4px !important;
     }
 
     .hero-name {
-        font-size: 2.4rem;
-        white-space: normal;
-        line-height: 1.1;
+        font-size: 2.4rem !important;
+        white-space: normal !important;
+        line-height: 1.1 !important;
     }
 
     .hero-title {
-        font-size: 1.05rem;
+        font-size: 1.05rem !important;
     }
 
     .hero-desc {
-        font-size: 0.88rem;
-        line-height: 1.7;
-        max-width: 100%;
+        font-size: 0.88rem !important;
+        line-height: 1.7 !important;
+        max-width: 100% !important;
     }
 
-    /* Darken overlay more on mobile so text is readable */
+    /* Top-to-bottom subtle gradient so face at top is crystal clear, text at bottom is perfectly readable */
     .hero-overlay {
         background: linear-gradient(
-            to right,
-            rgba(5, 0, 0, 0.97) 0%,
-            rgba(5, 0, 0, 0.92) 50%,
-            rgba(5, 0, 0, 0.6) 100%
-        );
+            to bottom,
+            rgba(5, 0, 0, 0.08) 0%,
+            rgba(5, 0, 0, 0.35) 30%,
+            rgba(5, 0, 0, 0.88) 60%,
+            rgba(5, 0, 0, 0.98) 100%
+        ) !important;
     }
 
     /* Hide the 3 floating metric cards on mobile —
@@ -3990,6 +4020,16 @@ body.modal-open {
     }
 }
 
+/* Hide duplicated identity tags on desktop */
+.about-tags-scroll .about-identity-tag:nth-child(n+6) {
+    display: none;
+}
+
+@keyframes identityTagsMarquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
 /* ==========================================================================
    MOBILE RESPONSIVE — Critical Overrides (global patch applied last)
    ========================================================================== */
@@ -4040,14 +4080,27 @@ body.modal-open {
         max-width: 100% !important;
         padding: 0 !important;
         margin: 0 auto !important;
-        gap: 24px !important;
+        gap: 20px !important;
         height: auto !important;
         opacity: 1 !important;
         visibility: visible !important;
     }
 
+    .about-right {
+        display: contents !important;
+    }
+
+    .about-section-header {
+        order: 1 !important;
+        text-align: center !important;
+        margin-bottom: 10px !important;
+        width: 100% !important;
+    }
+
     /* ── 5. Portrait Card & Flip Card: Photo guaranteed visible ── */
     .about-portrait-card {
+        order: 2 !important;
+        position: relative !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -4112,32 +4165,26 @@ body.modal-open {
         border-radius: 22px !important;
     }
 
+    /* Social icons floating INSIDE bottom of photo card on mobile */
     .about-portrait-links {
+        position: absolute !important;
+        bottom: 12px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         display: flex !important;
         justify-content: center !important;
-        margin-top: 12px !important;
+        margin-top: 0 !important;
         gap: 12px !important;
         opacity: 1 !important;
         visibility: visible !important;
-    }
-
-    /* ── 6. Right Column Content: Centered & Dark Readable Text ── */
-    .about-right {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-
-    .about-section-header {
-        text-align: center !important;
-        margin-bottom: 10px !important;
-        width: 100% !important;
+        z-index: 10 !important;
+        background: rgba(13, 2, 2, 0.75) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        padding: 6px 14px !important;
+        border-radius: 100px !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
     }
 
     .about-section .about-header-line {
@@ -4157,21 +4204,33 @@ body.modal-open {
         margin: 0 !important;
     }
 
-    /* Identity tags row */
+    /* Identity tags row — horizontal floating marquee on mobile */
     .about-identity {
+        order: 3 !important;
         width: 100% !important;
         margin-bottom: 14px !important;
+        overflow: hidden !important;
+        position: relative !important;
+        padding: 4px 0 !important;
+        mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+    }
+
+    .about-tags-scroll .about-identity-tag:nth-child(n+6) {
+        display: inline-flex !important;
     }
 
     .about-tags-scroll {
         display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 6px !important;
-        justify-content: center !important;
+        flex-wrap: nowrap !important;
+        gap: 10px !important;
+        width: max-content !important;
+        animation: identityTagsMarquee 12s linear infinite !important;
     }
 
     /* Bio text */
     .about-text-block {
+        order: 4 !important;
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
@@ -4180,6 +4239,19 @@ body.modal-open {
         margin-bottom: 14px !important;
         opacity: 1 !important;
         visibility: visible !important;
+    }
+
+    .about-divider {
+        order: 5 !important;
+    }
+
+    .about-competencies {
+        order: 6 !important;
+        width: 100% !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        margin-top: 6px !important;
     }
 
     .about-text-block p {
