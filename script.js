@@ -1379,7 +1379,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="modal-section">
                 <p class="modal-section-label">Performance Metrics</p>
-                <div class="key-metrics">${metricsHTML}</div>
+                <div class="key-metrics">
+                    <div class="metrics-track">${metricsHTML}${metricsHTML}</div>
+                </div>
             </div>
 
             <div class="modal-section">
